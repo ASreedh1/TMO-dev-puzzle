@@ -1,11 +1,6 @@
 <form [formGroup]="stockPickerForm">
   <mat-form-field>
-    <input
-      matInput
-      placeholder="Symbol e.g AAPL"
-      formControlName="symbol"
-      value=""
-    />
+    <input matInput placeholder="Symbol e.g AAPL" formControlName="symbol" />
     <mat-error
       ><span
         *ngIf="
@@ -27,9 +22,16 @@
         {{ timePeriod.viewValue }}
       </mat-option>
     </mat-select>
+    <mat-error
+      ><span
+        *ngIf="
+          !stockPickerForm.get('period').valid &&
+          stockPickerForm.get('period').touched
+        "
+        >Please choose a period</span
+      >
+    </mat-error>
   </mat-form-field>
-
-  <button (click)="fetchQuote()" mat-raised-button>Go</button>
 </form>
 
-<coding-challenge-chart [data$]="quotes$"></coding-challenge-chart>
+<coding-challenge-chart [data]="quotes$ | async"></coding-challenge-chart>
