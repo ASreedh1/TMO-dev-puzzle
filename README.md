@@ -1,4 +1,4 @@
-# Stocks coding challenge
+# T-Mobile Coding Challenge
 
 ### Task 2
 
