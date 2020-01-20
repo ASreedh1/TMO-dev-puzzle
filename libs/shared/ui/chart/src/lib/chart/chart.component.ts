@@ -5,7 +5,7 @@ import {
   OnInit
 } from '@angular/core';
 
-import { GoogleChart, handleChartOptions } from '@coding-challenge/util';
+import { GoogleChart, overrideChartOptions } from '@coding-challenge/util';
 
 @Component({
   selector: 'coding-challenge-chart',
@@ -15,11 +15,11 @@ import { GoogleChart, handleChartOptions } from '@coding-challenge/util';
 })
 export class ChartComponent implements OnInit {
   @Input() data: any;
-  @Input() chartOptions?: GoogleChart;
+  @Input() chart?: GoogleChart;
 
   constructor() {}
 
   ngOnInit() {
-    this.chartOptions = handleChartOptions(this.chartOptions);
+    this.chart = overrideChartOptions(this.chart);
   }
 }
