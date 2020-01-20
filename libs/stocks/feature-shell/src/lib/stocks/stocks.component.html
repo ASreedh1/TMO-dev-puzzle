@@ -36,14 +36,14 @@
   <button (click)="fetchQuote()" mat-raised-button>Go</button>
 </form>
 
-<div *ngIf="apiError; else: elseBlock">
+<div *ngIf="apiError">
   <mat-error
     ><span>{{ formError.apiError }}</span></mat-error
   >
 </div>
 <coding-challenge-chart
   [data]="quotes$ | async"
-  [chartOptions]="{
+  [chart]="{
     title: '',
     type: 'LineChart',
     data: [],
