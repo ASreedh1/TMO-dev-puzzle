@@ -9,6 +9,7 @@ import {
   priceQueryReducer,
   PRICEQUERY_FEATURE_KEY
 } from './+state/price-query.reducer';
+import { PriceQueryHttpService } from './service/price-query-http.service';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import {
     StoreModule.forFeature(PRICEQUERY_FEATURE_KEY, priceQueryReducer),
     EffectsModule.forFeature([PriceQueryEffects])
   ],
-  providers: [PriceQueryFacade]
+  providers: [PriceQueryHttpService, PriceQueryFacade]
 })
 export class StocksDataAccessPriceQueryModule {}
