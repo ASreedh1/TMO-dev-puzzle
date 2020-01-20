@@ -20,3 +20,8 @@ export const getAllPriceQueries = createSelector(
   getPriceQueryState,
   selectAll
 );
+
+export const getPriceQueryError = createSelector(
+  getPriceQueryState,
+  (state: PriceQueryState) => state.error
+);

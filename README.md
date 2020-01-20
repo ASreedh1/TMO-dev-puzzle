@@ -1,86 +1,57 @@
 # T-Mobile Coding Challenge
 
-### Important! Read this First !
-
-Do **not** submit a pull request to this repository.  You PR wil be rejected and your submission ignored.
-To be safe **do not Fork** this repository, if you do you will be tempted to create a PR.
-
-To _properly_ submit a coding challenge you must:
-
-1. Create a blank (empty) repo in the public git service of your choice ( github, gitlab, bitbucket )
-2. Clone this repo to your local workstation
-3. Reset the remote origin to point to your newly created empty repo
-4. Push the master branch up to your repo
-
-5. make necessary changes
-6. push changes to your origin
-7. send address of your copy to t-mobile.
-
-We will review your copy online before and during your interview.
-
-
-# Stocks coding challenge
-
-## How to run the application
-
-There are two apps: `stocks` and `stocks-api`.
-
-- `stocks` is the front-end. It uses Angular 7 and Material. You can run this using `yarn serve:stocks`
-- `stocks-api` uses Hapi and has a very minimal implementation. You can start the API server with `yarn serve:stocks-api`
-
-A proxy has been set up in `stocks` to proxy calls to `locahost:3333` which is the port that the Hapi server listens on.
-
-> You need to register for a token here: https://iexcloud.io/cloud-login#/register/ Use this token in the `environment.ts` file for the `stocks` app.
-
-> The charting library is the Google charts API: https://developers.google.com/chart/
-
-## Problem statement
-
-[Original problem statement](https://github.com/tmobile/developer-kata/blob/master/puzzles/web-api/stock-broker.md)
-
 ### Task 1
 
 Please provide a short code review of the base `master` branch:
 
 1. What is done well?
+
+- Application uses **Nrwl** Nx tool, which is used for monorepos and therefore there will be only a single workspace for all the projects including the frontend and the backend.
+
+- `app` folder contains different projects which can follow any frontend framework and use the shared components within different projects. `libs` folder allows to sharing code between frontend and backend.
+
+- Application uses the **ngRx** for state management and it follows facade design pattern.
+
+- Using facade pattern, it will create an abstraction to the state and gives simpler interface to UI components and uses indirection flow.
+
+- Application follows modularity which enables the reusability and used the lazy-loading of the modules.
+
 2. What would you change?
+
+- **[Done]** In `ChartComponent` data can be received as `@Input any` instead of Observables and so that can the subscribe code can be removed in the ngOnInit() method. This way we can use `async` pipe to subscribe from the template.
+
+- **[Done]** `ChangeDetectionStrategy.OnPush` will be used in the Chart component so that it depends only on the `@Input` so that it will increase the performance and component code will not get executed on every changes.
+
+- **[Done]** Chart options is hard-coded in the `ChartComponent`, `@Input` property as optional can be used to override the default option.
+
+- **[Done]** The `loadChildren` can use browser built-in `import` syntax to dynamic import the module. For this we need to modify `tsconfig.json` with
+
+```
+  "target": "es2015",
+  "module": "esnext"
+```
+
+```
+
+  loadChildren: () =>
+    import('@coding-challenge/stocks/feature-shell').then(
+      m => m.StocksFeatureShellModule
+    )
+
+```
+
+- **[Done]** A separate `util` folder can be used to have the constants and functions that are used in the `ui` or `feature-shell` and thus will increase the reusability and consistency. To showcase the `util` folder and `nx` commands, have generated using the command `ng generate @nrwl/schematics:library` and used in a minimal way. There are other commands which will leverage the use of application development and can control the structure.
+
+- **[Not Done]** `Hapi` server and it's route is created in a single file. This can be done using hapi plugin so that each can have different routes and can be registered in the server which will separate the logic and increase the reusability. This will be handled as part of **Task 4**.
+
+- **[Done]** API error can be retrieved from the state and shown in the form.
+
+- **[Done]** Added symbol to the state.
+
 3. Are there any code smells or problematic implementations?
 
-> Make a PR to fix at least one of the issues that you identify
-
-### Task 2
-
-```
-Business requirement: As a user I should be able to type into
-the symbol field and make a valid time-frame selection so that
-the graph is refreshed automatically without needing to click a button.
-```
-
-_**Make a PR from the branch `feat_stock_typeahead` to `master` and provide a code review on this PR**_
-
-> Add comments to the PR. Focus on all items that you can see - this is a hypothetical example but let's treat it as a critical application. Then present these changes as another commit on the PR.
-
-### Task 3
-
-```
-Business requirement: As a user I want to choose custom dates
-so that I can view the trends within a specific period of time.
-```
-
-_**Implement this feature and make a PR from the branch `feat_custom_dates` to `master`.**_
-
-> Use the material date-picker component
-
-> We need two date-pickers: "from" and "to". The date-pickers should not allow selection of dates after the current day. "to" cannot be before "from" (selecting an invalid range should make both dates the same value)
-
-### Task 4
-
-```
-Technical requirement: the server `stocks-api` should be used as a proxy
-to make calls. Calls should be cached in memory to avoid querying for the
-same data. If a query is not in cache we should call-through to the API.
-```
-
-_**Implement the solution and make a PR from the branch `feat_proxy_server` to `master`**_
-
-> It is important to get the implementation working before trying to organize and clean it up.
+- **[Fixed]** Google chart is not shown.
+- **[Fixed]** There are no `unsubscribe()` used for the subscriptions done.
+- **[Fixed]** All the test cases are failing.
+- **[Fixed]** Form error not added for input period.
+- **[Fixed]** API error not shown in the form.
