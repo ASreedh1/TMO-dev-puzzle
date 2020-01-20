@@ -1,7 +1,7 @@
 export enum TimePeriods {
   'All available data' = 'max',
   'Five years' = '5y',
-  'Two years' = '4y',
+  'Two years' = '2y',
   'One year' = '1y',
   'Year-to-date' = 'ytd',
   'Six months' = '6m',
