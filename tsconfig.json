@@ -7,8 +7,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es5",
-    "module": "es2015",
+    "target": "es2015",
+    "module": "esnext",
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
@@ -26,7 +26,8 @@
       ],
       "@coding-challenge/stocks/data-access-app-config": [
         "libs/stocks/data-access-app-config/src/index.ts"
-      ]
+      ],
+      "@coding-challenge/util": ["libs/util/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
