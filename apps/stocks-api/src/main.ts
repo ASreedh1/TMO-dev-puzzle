@@ -1,32 +1,19 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- **/
-import { Server } from 'hapi';
+import { HapiPluginConfig } from './hapi/hapi.type';
+import { stocksPlugin } from './app/plugin/stocks.plugin';
+import { start } from './hapi/hapi.server';
 
-const init = async () => {
-  const server = new Server({
-    port: 3333,
-    host: 'localhost'
-  });
-
-  server.route({
-    method: 'GET',
-    path: '/',
-    handler: (request, h) => {
-      return {
-        hello: 'world'
-      };
+const hapiPluginConfig: HapiPluginConfig = {
+  plugins: [
+    {
+      hapiPlugin: stocksPlugin,
+      options: {
+        enableBrowserCache: true
+      },
+      routes: {
+        prefix: '/api/v1.0/stocks'
+      }
     }
-  });
-
-  await server.start();
-  console.log('Server running on %s', server.info.uri);
+  ]
 };
 
-process.on('unhandledRejection', err => {
-  console.log(err);
-  process.exit(1);
-});
-
-init();
+start(hapiPluginConfig);
