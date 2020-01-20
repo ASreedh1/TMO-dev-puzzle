@@ -1,11 +1,6 @@
 <form [formGroup]="stockPickerForm">
   <mat-form-field>
-    <input
-      matInput
-      placeholder="Symbol e.g AAPL"
-      formControlName="symbol"
-      value=""
-    />
+    <input matInput placeholder="Symbol e.g AAPL" formControlName="symbol" />
     <mat-error
       ><span
         *ngIf="
@@ -16,20 +11,53 @@
       >
     </mat-error>
   </mat-form-field>
+  <mat-form-field>
+    <input
+      matInput
+      [matDatepicker]="dateFrom"
+      placeholder="Choose a start date"
+      [min]="date.minFromDate"
+      [max]="date.maxFromDate"
+      formControlName="dateFrom"
+      (dateChange)="resetDate()"
+    />
+    <mat-datepicker-toggle matSuffix [for]="dateFrom"></mat-datepicker-toggle>
+    <mat-error
+      ><span
+        *ngIf="
+          !stockPickerForm.get('dateFrom').valid &&
+          stockPickerForm.get('dateFrom').touched
+        "
+        >Please choose the start date</span
+      >
+    </mat-error>
+    <mat-datepicker touchUi #dateFrom></mat-datepicker>
+  </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Favorite time period</mat-label>
-    <mat-select formControlName="period">
-      <mat-option
-        *ngFor="let timePeriod of timePeriods"
-        [value]="timePeriod.value"
+    <input
+      matInput
+      [matDatepicker]="dateTo"
+      placeholder="Choose an end date"
+      [min]="date.minToDate"
+      [max]="date.maxToDate"
+      formControlName="dateTo"
+      (dateChange)="resetDate()"
+    />
+    <mat-datepicker-toggle matSuffix [for]="dateTo"></mat-datepicker-toggle>
+    <mat-error
+      ><span
+        *ngIf="
+          !stockPickerForm.get('dateTo').valid &&
+          stockPickerForm.get('dateTo').touched
+        "
+        >Please choose the end date</span
       >
-        {{ timePeriod.viewValue }}
-      </mat-option>
-    </mat-select>
+    </mat-error>
+    <mat-datepicker touchUi #dateTo></mat-datepicker>
   </mat-form-field>
 
   <button (click)="fetchQuote()" mat-raised-button>Go</button>
 </form>
 
-<coding-challenge-chart [data$]="quotes$"></coding-challenge-chart>
+<coding-challenge-chart [data]="quotes$ | async"></coding-challenge-chart>

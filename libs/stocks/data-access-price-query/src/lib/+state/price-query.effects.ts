@@ -15,6 +15,7 @@ import {
 } from './price-query.actions';
 import { PriceQueryPartialState } from './price-query.reducer';
 import { PriceQueryResponse } from './price-query.type';
+import { transformDateRangeToTimePeriod } from './price-query-transformer.util';
 
 @Injectable()
 export class PriceQueryEffects {
@@ -22,14 +23,24 @@ export class PriceQueryEffects {
     PriceQueryActionTypes.FetchPriceQuery,
     {
       run: (action: FetchPriceQuery, state: PriceQueryPartialState) => {
+        const period = transformDateRangeToTimePeriod(
+          action.dateFrom,
+          action.dateTo
+        );
         return this.httpClient
           .get(
-            `${this.env.apiURL}/beta/stock/${action.symbol}/chart/${
-              action.period
-            }?token=${this.env.apiKey}`
+            `${this.env.apiURL}/beta/stock/${
+              action.symbol
+            }/chart/${period}?token=${this.env.apiKey}`
           )
           .pipe(
-            map(resp => new PriceQueryFetched(resp as PriceQueryResponse[]))
+            map(
+              (resp: any[]) =>
+                new PriceQueryFetched(this.filterPriceQueryResponse(
+                  resp,
+                  action
+                ) as PriceQueryResponse[])
+            )
           );
       },
 
@@ -44,4 +55,21 @@ export class PriceQueryEffects {
     private httpClient: HttpClient,
     private dataPersistence: DataPersistence<PriceQueryPartialState>
   ) {}
+
+  /**
+   * Filter the price query response
+   * Fixes the chart issue if same from and to date selected
+   * Since new Date and action.date give different date value for hh:mm:ss
+   */
+  private filterPriceQueryResponse(resp: any[], action: FetchPriceQuery) {
+    return resp.filter(
+      (data: PriceQueryResponse) =>
+        (new Date(data.date) >= action.dateFrom &&
+          new Date(data.date) <= action.dateTo) ||
+        (new Date(data.date).toDateString() ===
+          action.dateFrom.toDateString() &&
+          new Date(data.date).toDateString() === action.dateTo.toDateString() &&
+          action.dateFrom.toDateString() === action.dateTo.toDateString())
+    );
+  }
 }
