@@ -1,6 +1,7 @@
 import { PriceQueryResponse, PriceQuery } from './price-query.type';
 import { map, pick } from 'lodash-es';
 import { parse, differenceInMonths, differenceInYears } from 'date-fns';
+import { FetchPriceQuery } from './price-query.actions';
 
 export function transformPriceQueryResponse(
   response: PriceQueryResponse[]
@@ -53,4 +54,12 @@ export function transformDateRangeToTimePeriod(dateFrom: Date, dateTo: Date) {
     default:
       return '1m';
   }
+}
+
+export function filterPriceQueryResponse(resp: any[], action: FetchPriceQuery) {
+  return resp.filter(
+    (data: PriceQueryResponse) =>
+      parse(data.date) >= parse(action.dateFrom) &&
+      parse(data.date) <= parse(action.dateTo)
+  );
 }

@@ -15,7 +15,10 @@ import {
 } from './price-query.actions';
 import { PriceQueryPartialState } from './price-query.reducer';
 import { PriceQueryResponse } from './price-query.type';
-import { transformDateRangeToTimePeriod } from './price-query-transformer.util';
+import {
+  transformDateRangeToTimePeriod,
+  filterPriceQueryResponse
+} from './price-query-transformer.util';
 
 @Injectable()
 export class PriceQueryEffects {
@@ -36,7 +39,7 @@ export class PriceQueryEffects {
           .pipe(
             map(
               (resp: any[]) =>
-                new PriceQueryFetched(this.filterPriceQueryResponse(
+                new PriceQueryFetched(filterPriceQueryResponse(
                   resp,
                   action
                 ) as PriceQueryResponse[])
@@ -55,21 +58,4 @@ export class PriceQueryEffects {
     private httpClient: HttpClient,
     private dataPersistence: DataPersistence<PriceQueryPartialState>
   ) {}
-
-  /**
-   * Filter the price query response
-   * Fixes the chart issue if same from and to date selected
-   * Since new Date and action.date give different date value for hh:mm:ss
-   */
-  private filterPriceQueryResponse(resp: any[], action: FetchPriceQuery) {
-    return resp.filter(
-      (data: PriceQueryResponse) =>
-        (new Date(data.date) >= action.dateFrom &&
-          new Date(data.date) <= action.dateTo) ||
-        (new Date(data.date).toDateString() ===
-          action.dateFrom.toDateString() &&
-          new Date(data.date).toDateString() === action.dateTo.toDateString() &&
-          action.dateFrom.toDateString() === action.dateTo.toDateString())
-    );
-  }
 }
