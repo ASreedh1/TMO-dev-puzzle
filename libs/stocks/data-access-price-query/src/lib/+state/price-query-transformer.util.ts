@@ -1,6 +1,6 @@
 import { PriceQueryResponse, PriceQuery } from './price-query.type';
 import { map, pick } from 'lodash-es';
-import { parse, differenceInMonths, differenceInYears } from 'date-fns';
+import { parse } from 'date-fns';
 import { FetchPriceQuery } from './price-query.actions';
 
 export function transformPriceQueryResponse(
