@@ -20,6 +20,6 @@ _Task 1 PR: https://github.com/ASreedh1/TMO-dev-puzzle/pull/1_
 ### Changes done
 
 - Added the Angular material date picker and form validation error.
-- Added logic to transform date range to periods available in API.
-- Used `dataChange` event of `mat-datepicker` to reset date when date "to" before "from".
-- Fixed the unit test case for Stock component.
+- Always pass `period` as `max` to IEX API, so that filtering can be applied to any dates within the last 5 years (limitation: date range cannot be passed to API and gives only last 5 year data).
+- Used `dataChange` event of mat-datepicker to reset date when date selected is "to" before "from" or "from" after "to".- Fixed the bug to show the chart.
+- Added / fixed the unit test case for Stock component.
