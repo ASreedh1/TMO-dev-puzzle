@@ -16,7 +16,7 @@ import {
 import { PriceQueryPartialState } from './price-query.reducer';
 import { PriceQueryResponse } from './price-query.type';
 import {
-  transformDateRangeToTimePeriod,
+  timePeriod,
   filterPriceQueryResponse
 } from './price-query-transformer.util';
 
@@ -26,15 +26,11 @@ export class PriceQueryEffects {
     PriceQueryActionTypes.FetchPriceQuery,
     {
       run: (action: FetchPriceQuery, state: PriceQueryPartialState) => {
-        const period = transformDateRangeToTimePeriod(
-          action.dateFrom,
-          action.dateTo
-        );
         return this.httpClient
           .get(
-            `${this.env.apiURL}/beta/stock/${
-              action.symbol
-            }/chart/${period}?token=${this.env.apiKey}`
+            `${this.env.apiURL}/beta/stock/${action.symbol}/chart/${
+              timePeriod.MAX
+            }?token=${this.env.apiKey}`
           )
           .pipe(
             map(

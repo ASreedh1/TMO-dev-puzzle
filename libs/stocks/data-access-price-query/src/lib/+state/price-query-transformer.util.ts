@@ -27,34 +27,9 @@ export function transformPriceQueryResponse(
   );
 }
 
-/**
- * Since API doesn't support dates, transform the dates to periods available in API
- */
-export function transformDateRangeToTimePeriod(dateFrom: Date, dateTo: Date) {
-  const diffInYears = differenceInYears(dateTo, dateFrom);
-  switch (true) {
-    case diffInYears >= 5:
-      return 'max';
-    case diffInYears >= 2:
-      return '5y';
-    case diffInYears >= 1:
-      return '2y';
-    case diffInYears > 0:
-      return '1y';
-  }
-
-  const diffInMonths = differenceInMonths(dateTo, dateFrom);
-  switch (true) {
-    case diffInMonths >= 1:
-      return '3m';
-    case diffInMonths >= 3:
-      return '6m';
-    case diffInMonths >= 6:
-      return '1y';
-    default:
-      return '1m';
-  }
-}
+export const timePeriod = {
+  MAX: 'max'
+};
 
 export function filterPriceQueryResponse(resp: any[], action: FetchPriceQuery) {
   return resp.filter(
