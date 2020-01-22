@@ -15,6 +15,10 @@ import {
 } from './price-query.actions';
 import { PriceQueryPartialState } from './price-query.reducer';
 import { PriceQueryResponse } from './price-query.type';
+import {
+  filterPriceQueryResponse,
+  transformDateRangeToTimePeriod
+} from './price-query-transformer.util';
 
 @Injectable()
 export class PriceQueryEffects {
@@ -22,14 +26,24 @@ export class PriceQueryEffects {
     PriceQueryActionTypes.FetchPriceQuery,
     {
       run: (action: FetchPriceQuery, state: PriceQueryPartialState) => {
+        const period = transformDateRangeToTimePeriod(
+          action.dateFrom,
+          action.dateTo
+        );
         return this.httpClient
           .get(
-            `${this.env.apiURL}/beta/stock/${action.symbol}/chart/${
-              action.period
-            }?token=${this.env.apiKey}`
+            `${this.env.apiURL}/beta/stock/${
+              action.symbol
+            }/chart/${period}?token=${this.env.apiKey}`
           )
           .pipe(
-            map(resp => new PriceQueryFetched(resp as PriceQueryResponse[]))
+            map(
+              (resp: any[]) =>
+                new PriceQueryFetched(filterPriceQueryResponse(
+                  resp,
+                  action
+                ) as PriceQueryResponse[])
+            )
           );
       },
 
